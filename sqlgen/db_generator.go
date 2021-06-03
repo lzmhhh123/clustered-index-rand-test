@@ -29,6 +29,9 @@ func GenNewColumn(id int, w *Weight) *Column {
 	if w.CreateTable_MustIntCol {
 		col.Tp = ColumnTypeInt + ColumnType(rand.Intn(int(5)))
 	}
+	if w.CreateTable_MustEnumCol {
+		col.Tp = ColumnTypeEnum
+	}
 	switch col.Tp {
 	// https://docs.pingcap.com/tidb/stable/data-type-numeric
 	case ColumnTypeFloat, ColumnTypeDouble:
@@ -47,7 +50,15 @@ func GenNewColumn(id int, w *Weight) *Column {
 	case ColumnTypeVarchar, ColumnTypeText, ColumnTypeBlob, ColumnTypeVarBinary:
 		col.arg1 = 1 + rand.Intn(512)
 	case ColumnTypeEnum, ColumnTypeSet:
-		col.args = []string{"Alice", "Bob", "Charlie", "David"}
+		var enumArgs = [][]string{
+			{"Alice", "Bob", "Charlie", "David"},
+			{"WINTER", "SPRING", "SUMMER", "FALL"},
+			{"PENNY", "NICKLE", "DIME", "QUARTER"},
+			{"copper", "bronze", "silver", "gold"},
+			{"Newspaper", "Newsletter", "Magazine", "Book"},
+			{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"},
+		}
+		col.args = enumArgs[rand.Intn(len(enumArgs))]
 	}
 	if !col.Tp.RequiredFieldLength() && rand.Intn(5) == 0 {
 		col.arg1, col.arg2 = 0, 0
@@ -112,6 +123,7 @@ func GenNewIndex(id int, tbl *Table, w *Weight) *Index {
 	} else {
 		// Exclude primary key type.
 		idx.Tp = IndexType(rand.Intn(int(IndexTypePrimary)))
+		//idx.Tp = IndexTypeUnique
 	}
 	return idx
 }

@@ -45,6 +45,7 @@ type Weight struct {
 	CreateTable_MustPrefixIndex bool
 	CreateTable_MustStrCol      bool
 	CreateTable_MustIntCol      bool
+	CreateTable_MustEnumCol     bool
 	Query                       int
 	Query_DML                   int
 	Query_Select                int
@@ -102,6 +103,7 @@ var DefaultWeight = Weight{
 	CreateTable_Partition_Type:  "",
 	CreateTable_MustStrCol:      false,
 	CreateTable_MustIntCol:      false,
+	CreateTable_MustEnumCol:     true,
 	Query:                       15,
 	Query_DML:                   20,
 	Query_Select:                1,
